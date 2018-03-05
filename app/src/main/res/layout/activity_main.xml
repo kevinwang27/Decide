@@ -1,58 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/darkGray"
     tools:context="kevinwang.personal.decide.MainActivity">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/middleGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/topGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/bottomGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/leftGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/rightGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.85" />
 
     <TextView
         android:id="@+id/prompt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/initPrompt"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:textSize="22sp"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@id/topGuideline"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center">
+    <Button
+        android:id="@+id/eat_button"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="@android:color/white"
+        android:textSize="17sp"
+        android:onClick="launchEatOptionsActivity"
+        android:text="@string/eat_buttonText"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toTopOf="@id/shop_button"
+        app:layout_constraintLeft_toLeftOf="@id/leftGuideline"
+        app:layout_constraintRight_toRightOf="@id/rightGuideline"
+        app:layout_constraintTop_toTopOf="@+id/topGuideline" />
 
-        <Button
-            android:id="@+id/eat_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/prompt"
-            android:layout_centerHorizontal="true"
-            android:onClick="launchEatOptionsActivity"
-            android:text="@string/eat_buttonText" />
+    <Button
+        android:id="@+id/shop_button"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@id/eat_button"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="@android:color/white"
+        android:textSize="17sp"
+        android:onClick="launchShopOptionsActivity"
+        android:text="@string/shop_buttonText"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toTopOf="@+id/middleGuideline"
+        app:layout_constraintLeft_toLeftOf="@id/leftGuideline"
+        app:layout_constraintRight_toRightOf="@id/rightGuideline"
+        app:layout_constraintTop_toBottomOf="@id/eat_button" />
 
-        <Button
-            android:id="@+id/shop_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/eat_button"
-            android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
-            android:onClick="launchShopOptionsActivity"
-            android:text="@string/shop_buttonText" />
+    <Button
+        android:id="@+id/play_button"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@id/shop_button"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="@android:color/white"
+        android:textSize="17sp"
+        android:onClick="launchPlayOptionsActivity"
+        android:text="@string/play_buttonText"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toTopOf="@id/relax_button"
+        app:layout_constraintLeft_toLeftOf="@id/leftGuideline"
+        app:layout_constraintRight_toRightOf="@id/rightGuideline"
+        app:layout_constraintTop_toBottomOf="@+id/middleGuideline" />
 
-        <Button
-            android:id="@+id/play_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/shop_button"
-            android:layout_centerHorizontal="true"
-            android:onClick="launchPlayOptionsActivity"
-            android:text="@string/play_buttonText" />
+    <Button
+        android:id="@+id/relax_button"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@id/play_button"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="@android:color/white"
+        android:textSize="17sp"
+        android:onClick="launchRelaxOptionsActivity"
+        android:text="@string/relax_buttonText"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toTopOf="@+id/bottomGuideline"
+        app:layout_constraintLeft_toLeftOf="@id/leftGuideline"
+        app:layout_constraintRight_toRightOf="@id/rightGuideline"
+        app:layout_constraintTop_toBottomOf="@+id/play_button" />
 
-        <Button
-            android:id="@+id/relax_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/play_button"
-            android:layout_centerHorizontal="true"
-            android:onClick="launchRelaxOptionsActivity"
-            android:text="@string/relax_buttonText" />
-    </RelativeLayout>
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
