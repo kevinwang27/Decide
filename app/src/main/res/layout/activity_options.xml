@@ -1,56 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/darkGray"
     tools:context="kevinwang.personal.decide.OptionsActivity">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <android.support.constraint.Guideline
+        android:id="@+id/middleGuideline"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.50" />
 
-        <TextView
-            android:id="@+id/distance_option"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/distance_option"
-            android:textAlignment="center" />
+    <TextView
+        android:id="@+id/distance_option"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/distance_option"
+        android:textSize="20sp"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@id/distance_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <EditText
-            android:id="@+id/distance_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/distance_option"
-            android:layout_centerHorizontal="true"
-            android:hint="@string/distance_hint"
-            android:inputType="number" />
+    <EditText
+        android:id="@+id/distance_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:hint="@string/distance_hint"
+        android:inputType="number"
+        android:textColor="@android:color/white"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/middleGuideline" />
 
-        <!--<TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/distance_text"
-            android:layout_alignBottom="@+id/distance_text"
-            android:layout_toLeftOf="@+id/distance_text"
-            android:layout_toStartOf="@+id/distance_text"
-            android:text="<" />-->
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/distance_text"
-            android:layout_alignBottom="@+id/distance_text"
-            android:layout_toEndOf="@+id/distance_text"
-            android:layout_toRightOf="@+id/distance_text"
-            android:text="@string/distance_unit" />
-
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:text="@string/distance_unit"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/distance_text"
+        app:layout_constraintStart_toEndOf="@+id/distance_text" />
 
     <Button
-        android:layout_width="match_parent"
+        android:id="@+id/go"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_marginTop="12dp"
+        android:background="@android:color/holo_green_dark"
         android:onClick="launchMapsActivity"
-        android:text="@string/go" />
+        android:text="@string/go"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="@+id/distance_option"
+        app:layout_constraintStart_toStartOf="@+id/distance_option"
+        app:layout_constraintTop_toTopOf="@+id/middleGuideline" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
