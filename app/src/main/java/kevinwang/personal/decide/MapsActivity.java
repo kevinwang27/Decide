@@ -41,8 +41,10 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
     private Location currentLocation;
     private ProgressBar spinner;
     private TextView resultText;
+    private TextView resultAddressText;
     private String placeID;
     private String placeName;
+    private String placeAddress;
     private boolean searched;
 
     private LinkedList<String> eatTypes;
@@ -57,6 +59,8 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
 
         spinner = (ProgressBar) findViewById(R.id.progressBar);
         resultText = (TextView) findViewById(R.id.result);
+        resultAddressText = (TextView) findViewById(R.id.result_address);
+
         searched = false;
         initLists();
 
@@ -240,8 +244,10 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
             JSONObject place = results.getJSONObject(index);
             placeName = place.getString("name");
             placeID = place.getString("place_id");
+            placeAddress = place.getString("vicinity");
             spinner.setVisibility(View.INVISIBLE);
 
+            resultAddressText.setText(placeAddress);
             resultText.setText(placeName);
             searched = true;
 
