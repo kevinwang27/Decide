@@ -1,11 +1,9 @@
 package kevinwang.personal.decide;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -14,44 +12,46 @@ import javax.net.ssl.HttpsURLConnection;
  * Created by kevinwang on 3/4/18.
  */
 
-public class HTTPRequestTask extends AsyncTask<Context, Void, String> {
-    private String getNearbySearch(Context context, int maxDistance, int maxPrice, String type) throws Exception{
-        URL obj = new URL("https://maps.googleapis.com/maps/api/place/nearbysearch/json");
-        HttpsURLConnection connection = (HttpsURLConnection) obj.openConnection();
-        connection.addRequestProperty("location", -33.8670522 + "," + 151.1957362);
-        connection.addRequestProperty("radius", String.valueOf(maxDistance));
-        connection.addRequestProperty("minprice", "0");
-        connection.addRequestProperty("maxprice", String.valueOf(maxPrice));
-        connection.addRequestProperty("type", type);
-        connection.addRequestProperty("key", context.getString(R.string.google_maps_api_key));
+public class HTTPRequestTask extends AsyncTask<MapsActivity.Data, Void, String> {
 
-        int responseCode = connection.getResponseCode();
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(connection.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
+    public interface AsyncResponse {
+        void processFinished(String response);
+    }
 
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
+    private AsyncResponse asyncResponse = null;
 
-        return response.toString();
+    HTTPRequestTask(AsyncResponse asyncResponse) {
+        this.asyncResponse = asyncResponse;
     }
 
     @Override
-    protected String doInBackground(Context... contexts) {
+    protected String doInBackground(MapsActivity.Data... data) {
         try {
-            return getNearbySearch(contexts[0], 1610,
-                    2, "restaurant");
+            return getNearbySearch(data[0]);
         } catch (Exception e){
             Log.d("loc", e.toString());
             return "";
         }
     }
 
-    protected void onPostExecute(String result) {
-        Log.d("loc", result);
+    private String getNearbySearch(MapsActivity.Data data) throws Exception{
+        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
+                data.getLatitude() + "," + data.getLongitude() + "&radius=" + data.getMaxDistance() +
+                "&type=" + data.getType() + "&key=" + data.getContext().getString(R.string.google_maps_api_key);
+        Log.d("loc", url);
+        URL obj = new URL(url);
+        HttpsURLConnection connection = (HttpsURLConnection) obj.openConnection();
+        connection.setRequestProperty("Accept-Charset", "UTF-8");
+        InputStream response = connection.getInputStream();
+        return convertStreamToString(response);
     }
 
+    protected void onPostExecute(String result) {
+        asyncResponse.processFinished(result);
+    }
+
+    private String convertStreamToString(java.io.InputStream is) {
+        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
+    }
 }
