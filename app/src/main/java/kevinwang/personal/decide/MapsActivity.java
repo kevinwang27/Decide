@@ -51,6 +51,7 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
     private Location currentLocation;
     private ProgressBar spinner;
     private String currentPlaceID;
+    private String placeName;
 
     private LinkedList<String> eatTypes;
     private LinkedList<String> shopTypes;
@@ -206,10 +207,7 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
                     makeAPIRequest();
                 } else {
                     buildTryAgain();
-                    return;
                 }
-            } else if (obj.getString("status").equals("INVALID_REQUEST")) {
-                buildTryAgain();
                 return;
             } else if (!obj.getString("status").equals("OK")) {
                 buildTryAgain();
@@ -223,10 +221,12 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
                 }
             }
             JSONObject place = results.getJSONObject(index);
-            String placeName = place.getString("name");
-            String placeID = place.getString("place_id");
-            currentPlaceID = placeID;
-            Log.d("loc", placeName + " ID: " + placeID);
+            placeName = place.getString("name");
+            currentPlaceID = place.getString("place_id");
+            spinner.setVisibility(View.INVISIBLE);
+
+            TextView resultText = (TextView) findViewById(R.id.result);
+            resultText.setText(placeName);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -270,6 +270,7 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
 
     public void tryAgain(View view) {
         initLists();
+        spinner.setVisibility(View.VISIBLE);
         makeAPIRequest();
     }
 
