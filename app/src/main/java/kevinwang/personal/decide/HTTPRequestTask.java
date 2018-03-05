@@ -31,7 +31,7 @@ public class HTTPRequestTask extends AsyncTask<MapsActivity.Data, Void, String> 
     protected String doInBackground(MapsActivity.Data... data) {
         try {
             return getNearbySearch(data[0]);
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.d("loc", e.toString());
             return "";
         }
@@ -40,7 +40,7 @@ public class HTTPRequestTask extends AsyncTask<MapsActivity.Data, Void, String> 
     /*
      * Makes the API call and reads the resulting InputStream
      */
-    private String getNearbySearch(MapsActivity.Data data) throws Exception{
+    private String getNearbySearch(MapsActivity.Data data) throws Exception {
         String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
                 data.getLatitude() + "," + data.getLongitude() + "&radius=" + data.getMaxDistance() +
                 "&type=" + data.getType() + "&key=" + data.getContext().getString(R.string.google_maps_api_key);

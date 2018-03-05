@@ -1,8 +1,6 @@
 package kevinwang.personal.decide;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,36 +13,25 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.LinkedList;
-
-import javax.net.ssl.HttpsURLConnection;
 
 public class MapsActivity extends AppCompatActivity implements LocationListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -207,7 +194,7 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
             public void processFinished(String response) {
                 processJSON(response, typeArray);
             }
-        }).execute(new Data(this, type , maxDistance));
+        }).execute(new Data(this, type, maxDistance));
     }
 
     private LinkedList<String> chooseTypeArray(int choice) {
@@ -264,7 +251,8 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
     }
 
     @Override
-    public void onConnectionSuspended(int i) {}
+    public void onConnectionSuspended(int i) {
+    }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -290,7 +278,7 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
                 if (grantResults.length > 0) {
-                    try{
+                    try {
                         LocationServices.FusedLocationApi.requestLocationUpdates(
                                 gac, locationRequest, this);
                     } catch (SecurityException e) {

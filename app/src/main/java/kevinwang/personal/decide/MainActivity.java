@@ -1,8 +1,8 @@
 package kevinwang.personal.decide;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
@@ -11,6 +11,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int SHOP = 1;
     public static final int PLAY = 2;
     public static final int RELAX = 3;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
