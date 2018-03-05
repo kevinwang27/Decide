@@ -30,6 +30,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -53,38 +55,18 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
         if (!isEnabled()) {
             buildAlert();
         }
-        setLocationRequest();
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(5000);
+        locationRequest.setFastestInterval(15000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         gac = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
-
-        Intent intent = getIntent();
-        int type = intent.getIntExtra(MainActivity.TYPE_OF_ACTIVITY, 0);
-        int maxDistance = intent.getIntExtra(OptionsActivity.DISTANCE, 5);
-        int maxPrice = intent.getIntExtra(OptionsActivity.PRICE, 1);
-    }
-    private void getNearbySearch(String url, int maxDistance, int maxPrice, String type) throws Exception{
-        URL obj = new URL(url);
-        HttpsURLConnection connection = (HttpsURLConnection) obj.openConnection();
-        connection.setRequestMethod("get");
-        connection.addRequestProperty("location", currentLocation.getLatitude() + "," + currentLocation.getLongitude());
-        connection.addRequestProperty("radius", String.valueOf(maxDistance));
-        connection.addRequestProperty("minprice", "0");
-        connection.addRequestProperty("maxprice", String.valueOf(maxPrice));
-        connection.addRequestProperty("type", type);
-        connection.addRequestProperty("key", "123");
     }
 
     private boolean isEnabled() {
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
         return service != null && (service.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 || service.isProviderEnabled(LocationManager.NETWORK_PROVIDER));
-    }
-
-    private void setLocationRequest() {
-        locationRequest = new LocationRequest();
-        locationRequest.setInterval(5000);
-        locationRequest.setFastestInterval(15000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     private void displayError() {
@@ -135,6 +117,14 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
             Log.d("loc", "null location");
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(gac, locationRequest, this);
+
+        Intent intent = getIntent();
+        int type = intent.getIntExtra(MainActivity.TYPE_OF_ACTIVITY, 0);
+        int maxDistance = intent.getIntExtra(OptionsActivity.DISTANCE, 5);
+        int maxPrice = intent.getIntExtra(OptionsActivity.PRICE, 1);
+
+        Log.d("loc", "reached");
+        new HTTPRequestTask().execute(this);
     }
 
     @Override
