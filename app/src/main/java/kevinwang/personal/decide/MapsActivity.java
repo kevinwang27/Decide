@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -38,7 +39,9 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.LinkedList;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -50,8 +53,10 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
     private LocationRequest locationRequest;
     private Location currentLocation;
     private ProgressBar spinner;
-    private String currentPlaceID;
+    private TextView resultText;
+    private String placeID;
     private String placeName;
+    private boolean searched;
 
     private LinkedList<String> eatTypes;
     private LinkedList<String> shopTypes;
@@ -64,11 +69,12 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
         setContentView(R.layout.activity_maps);
 
         spinner = (ProgressBar) findViewById(R.id.progressBar);
-
+        resultText = (TextView) findViewById(R.id.result);
+        searched = false;
         initLists();
 
-        if (!isEnabled()) {
-            buildAlert();
+        if (!locationIsEnabled()) {
+            buildLocationAlert();
         }
         locationRequest = new LocationRequest();
         locationRequest.setInterval(5000);
@@ -103,13 +109,13 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
         relaxTypes.add("beauty_salon");
     }
 
-    private boolean isEnabled() {
+    private boolean locationIsEnabled() {
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
         return service != null && (service.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 || service.isProviderEnabled(LocationManager.NETWORK_PROVIDER));
     }
 
-    private void buildAlert() {
+    private void buildLocationAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Enable")
                 .setMessage("Please turn on location services and allow Decide access in order to use this app")
@@ -167,7 +173,9 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
             Log.d("loc", "null location");
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(gac, locationRequest, this);
-        makeAPIRequest();
+        if (!searched) {
+            makeAPIRequest();
+        }
     }
 
     private void makeAPIRequest() {
@@ -215,18 +223,18 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
             }
             JSONArray results = obj.getJSONArray("results");
             int index = (int) (Math.random() * results.length());
-            if (results.length() > 1 && currentPlaceID != null) {
-                while (currentPlaceID.equals(results.getJSONObject(index).getString("place_id"))) {
+            if (results.length() > 1 && placeID != null) {
+                while (placeID.equals(results.getJSONObject(index).getString("place_id"))) {
                     index = (int) (Math.random() * results.length());
                 }
             }
             JSONObject place = results.getJSONObject(index);
             placeName = place.getString("name");
-            currentPlaceID = place.getString("place_id");
+            placeID = place.getString("place_id");
             spinner.setVisibility(View.INVISIBLE);
 
-            TextView resultText = (TextView) findViewById(R.id.result);
             resultText.setText(placeName);
+            searched = true;
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -262,7 +270,7 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
                         e.printStackTrace();
                     }
                 } else {
-                    buildAlert();
+                    buildLocationAlert();
                 }
             }
         }
@@ -270,8 +278,24 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
 
     public void tryAgain(View view) {
         initLists();
+        searched = false;
+        resultText.setText("");
         spinner.setVisibility(View.VISIBLE);
         makeAPIRequest();
+    }
+
+    public void go(View view) {
+        String url = "https://www.google.com/maps/search/?api=1&query=" + URLEncoder.encode(placeName) +
+                "&query_place+id=" + URLEncoder.encode(placeID);
+        openWebPage(url);
+    }
+
+    public void openWebPage(String url) {
+        Uri webpage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 
     class Data {
