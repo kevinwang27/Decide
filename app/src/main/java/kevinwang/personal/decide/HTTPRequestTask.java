@@ -14,6 +14,9 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class HTTPRequestTask extends AsyncTask<MapsActivity.Data, Void, String> {
 
+    /*
+     * Listener for when the tsk finishes
+     */
     public interface AsyncResponse {
         void processFinished(String response);
     }
@@ -34,6 +37,9 @@ public class HTTPRequestTask extends AsyncTask<MapsActivity.Data, Void, String> 
         }
     }
 
+    /*
+     * Makes the API call and reads the resulting InputStream
+     */
     private String getNearbySearch(MapsActivity.Data data) throws Exception{
         String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
                 data.getLatitude() + "," + data.getLongitude() + "&radius=" + data.getMaxDistance() +
@@ -50,6 +56,9 @@ public class HTTPRequestTask extends AsyncTask<MapsActivity.Data, Void, String> 
         asyncResponse.processFinished(result);
     }
 
+    /*
+     * Helper method to convert an InputStream to a String
+     */
     private String convertStreamToString(java.io.InputStream is) {
         java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";

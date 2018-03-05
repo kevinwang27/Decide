@@ -19,6 +19,9 @@ public class OptionsActivity extends AppCompatActivity {
         type = intent.getIntExtra(MainActivity.TYPE_OF_ACTIVITY, 0);
     }
 
+    /*
+     * Pass proper data to the next activity
+     */
     public void launchMapsActivity(View view) {
         EditText distanceText = (EditText) findViewById(R.id.distance_text);
 
@@ -31,6 +34,9 @@ public class OptionsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /*
+     * Helper method for converting miles to meters (needed for API call)
+     */
     private int convertToMeters(int miles) {
         return miles * 1609;
     }

@@ -17,6 +17,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    /*
+     * Launches the next screen and sends which button was pressed
+     */
     public void launchOptionsActivity(View view, int choice) {
         Intent intent = new Intent(this, OptionsActivity.class);
         switch (choice) {

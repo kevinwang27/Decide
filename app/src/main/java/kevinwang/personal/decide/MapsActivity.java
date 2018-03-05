@@ -84,6 +84,9 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
                 .addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
     }
 
+    /*
+     * Initializes all linked lists of location types
+     */
     private void initLists() {
         eatTypes = new LinkedList<>();
         eatTypes.add("restaurant");
@@ -109,12 +112,18 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
         relaxTypes.add("beauty_salon");
     }
 
+    /*
+     * Helper method for testing whether location is enabled
+     */
     private boolean locationIsEnabled() {
         LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
         return service != null && (service.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 || service.isProviderEnabled(LocationManager.NETWORK_PROVIDER));
     }
 
+    /*
+     * Builds an alert for when location is off
+     */
     private void buildLocationAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Enable")
@@ -130,6 +139,9 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
         builder.create().show();
     }
 
+    /*
+     * Builds an alert for when selection criteria are too strict
+     */
     private void buildTryAgain() {
         spinner.setVisibility(View.GONE);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -157,6 +169,9 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
         gac.disconnect();
     }
 
+    /*
+     * Once connected, update location and make API call
+     */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -178,6 +193,9 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
         }
     }
 
+    /*
+     * Reads data from the intent and calls HTTPRequestTask to make the API call
+     */
     private void makeAPIRequest() {
         Intent intent = getIntent();
         final LinkedList<String> typeArray = chooseTypeArray(intent.getIntExtra(MainActivity.TYPE_OF_ACTIVITY, 0));
@@ -207,6 +225,9 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
         }
     }
 
+    /*
+     * Receives string from API call and extracts name and id of a random place within the JSON object
+     */
     private void processJSON(String res, LinkedList<String> typeArray) {
         try {
             JSONObject obj = new JSONObject(res);
@@ -221,6 +242,7 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
                 buildTryAgain();
                 return;
             }
+
             JSONArray results = obj.getJSONArray("results");
             int index = (int) (Math.random() * results.length());
             if (results.length() > 1 && placeID != null) {
@@ -246,17 +268,22 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d("loc", "failed");
+        buildLocationAlert();
     }
 
+    /*
+     * Updates location when it changes (in case user is moving and wants another suggestion)
+     */
     @Override
     public void onLocationChanged(Location location) {
         if (location != null) {
             currentLocation = location;
-            Log.d("loc", ""+currentLocation.getLongitude());
         }
     }
 
+    /*
+     * Reads whether user gave proper permissions or not
+     */
     @Override
     public void onRequestPermissionsResult(
             int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -276,6 +303,9 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
         }
     }
 
+    /*
+     * Re-initializes then makes another API call
+     */
     public void tryAgain(View view) {
         initLists();
         searched = false;
@@ -284,12 +314,18 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
         makeAPIRequest();
     }
 
+    /*
+     * Launches google maps with the suggested location
+     */
     public void go(View view) {
         String url = "https://www.google.com/maps/search/?api=1&query=" + URLEncoder.encode(placeName) +
                 "&query_place+id=" + URLEncoder.encode(placeID);
         openWebPage(url);
     }
 
+    /*
+     * Opens a given web page
+     */
     public void openWebPage(String url) {
         Uri webpage = Uri.parse(url);
         Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
@@ -298,6 +334,9 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
         }
     }
 
+    /*
+     * Stores data to pass to HTTPRequestTask
+     */
     class Data {
         private Context context;
         private String type;
