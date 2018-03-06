@@ -364,11 +364,11 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
     public void tryAgain(View view) {
         initLists();
         searched = false;
+        makeAPIRequest();
         resultText.setText("");
         resultAddressText.setText("");
-        marker.remove();
         spinner.setVisibility(View.VISIBLE);
-        makeAPIRequest();
+        marker.remove();
     }
 
     /*
