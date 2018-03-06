@@ -364,7 +364,7 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
     public void tryAgain(View view) {
         initLists();
         searched = false;
-        makeAPIRequest();
+        makeAPIRequest();   
         resultText.setText("");
         resultAddressText.setText("");
         spinner.setVisibility(View.VISIBLE);
