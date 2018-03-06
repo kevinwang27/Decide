@@ -1,7 +1,6 @@
 package kevinwang.personal.decide;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -32,7 +31,6 @@ public class HTTPRequestTask extends AsyncTask<MapsActivity.Data, Void, String> 
         try {
             return getNearbySearch(data[0]);
         } catch (Exception e) {
-            Log.d("loc", e.toString());
             return "";
         }
     }
@@ -44,7 +42,6 @@ public class HTTPRequestTask extends AsyncTask<MapsActivity.Data, Void, String> 
         String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
                 data.getLatitude() + "," + data.getLongitude() + "&radius=" + data.getMaxDistance() +
                 "&type=" + data.getType() + "&key=" + data.getContext().getString(R.string.google_maps_api_key);
-        Log.d("loc", url);
         URL obj = new URL(url);
         HttpsURLConnection connection = (HttpsURLConnection) obj.openConnection();
         connection.setRequestProperty("Accept-Charset", "UTF-8");

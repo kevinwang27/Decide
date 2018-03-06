@@ -15,7 +15,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -217,8 +216,6 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
         Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(gac);
         if (lastLocation != null) {
             currentLocation = lastLocation;
-        } else {
-            Log.d("loc", "null location");
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(gac, locationRequest, this);
         if (!searched) {
@@ -364,7 +361,7 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
     public void tryAgain(View view) {
         initLists();
         searched = false;
-        makeAPIRequest();   
+        makeAPIRequest();
         resultText.setText("");
         resultAddressText.setText("");
         spinner.setVisibility(View.VISIBLE);
