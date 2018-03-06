@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="@color/darkGray"
     tools:context="kevinwang.personal.decide.OptionsActivity">
 
@@ -48,7 +49,8 @@
         android:textColor="@android:color/white"
         android:textSize="20sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/distance_text"
-        app:layout_constraintStart_toEndOf="@+id/distance_text" />
+        app:layout_constraintStart_toEndOf="@+id/distance_text"
+        android:layout_marginLeft="2dp" />
 
     <Button
         android:id="@+id/go"

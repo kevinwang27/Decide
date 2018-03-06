@@ -1,9 +1,13 @@
 package kevinwang.personal.decide;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Fade;
 import android.view.View;
+import android.view.Window;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TYPE_OF_ACTIVITY = "com.personal.kevinwang.TYPE_OF_ACTIVITY";
@@ -14,6 +18,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+            getWindow().setExitTransition(new Fade());
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
@@ -37,7 +45,11 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra(TYPE_OF_ACTIVITY, RELAX);
                 break;
         }
-        startActivity(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+        } else {
+            startActivity(intent);
+        }
     }
 
     public void launchEatOptionsActivity(View view) {
