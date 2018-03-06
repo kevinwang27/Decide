@@ -9,13 +9,13 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
- * Created by kevinwang on 3/4/18.
+ * Calls the Google Maps API in the background
  */
 
 public class HTTPRequestTask extends AsyncTask<MapsActivity.Data, Void, String> {
 
     /*
-     * Listener for when the tsk finishes
+     * Listener for when the task finishes
      */
     public interface AsyncResponse {
         void processFinished(String response);

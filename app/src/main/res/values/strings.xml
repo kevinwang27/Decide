@@ -14,6 +14,6 @@
     <string name="go">GO</string>
     <string name="location_error">Unable to access your location.
         Please make sure your location is on and you allow Decide access to it. </string>
-    <string name="try_again">Try Again</string>
+    <string name="try_again">Try Another</string>
     <string name="view_in_maps">View in Maps</string>
 </resources>

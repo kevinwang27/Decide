@@ -25,6 +25,13 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,6 +49,11 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
     private ProgressBar spinner;
     private TextView resultText;
     private TextView resultAddressText;
+    private MapFragment mapFragment;
+    private GoogleMap map;
+    private Marker marker;
+    private double lat, lng;
+
     private String placeID;
     private String placeName;
     private String placeAddress;
@@ -53,26 +65,57 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
     private LinkedList<String> relaxTypes;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
         spinner = (ProgressBar) findViewById(R.id.progressBar);
         resultText = (TextView) findViewById(R.id.result);
         resultAddressText = (TextView) findViewById(R.id.result_address);
+        mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.map);
 
-        searched = false;
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                map = googleMap;
+                if (savedInstanceState != null) {
+                    placeName = savedInstanceState.getString("place");
+                    placeAddress = savedInstanceState.getString("address");
+                    placeID = savedInstanceState.getString("id");
+                    lat = savedInstanceState.getDouble("markerLat");
+                    lng = savedInstanceState.getDouble("markerLng");
+                    resultText.setText(placeName);
+                    resultAddressText.setText(placeAddress);
+                    spinner.setVisibility(View.GONE);
+                    LatLng point = new LatLng(lat, lng);
+                    marker = map.addMarker(new MarkerOptions().position(point).title(savedInstanceState.getString("place")));
+                }
+            }
+        });
+        if (savedInstanceState == null) {
+            searched = false;
+        } else {
+            searched = true;
+        }
         initLists();
 
         if (!locationIsEnabled()) {
             buildLocationAlert();
         }
+        buildLocationRequest();
+        gac = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
+    }
+
+    /*
+     * Makes a location request
+     */
+    private void buildLocationRequest() {
         locationRequest = new LocationRequest();
         locationRequest.setInterval(5000);
         locationRequest.setFastestInterval(15000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        gac = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
     }
 
     /*
@@ -174,7 +217,6 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
         Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(gac);
         if (lastLocation != null) {
             currentLocation = lastLocation;
-            Log.d("loc", "" + currentLocation.getLongitude());
         } else {
             Log.d("loc", "null location");
         }
@@ -199,21 +241,6 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
                 processJSON(response, typeArray);
             }
         }).execute(new Data(this, type, maxDistance));
-    }
-
-    private LinkedList<String> chooseTypeArray(int choice) {
-        switch (choice) {
-            case MainActivity.EAT:
-                return eatTypes;
-            case MainActivity.PLAY:
-                return playTypes;
-            case MainActivity.SHOP:
-                return shopTypes;
-            case MainActivity.RELAX:
-                return relaxTypes;
-            default:
-                return eatTypes;
-        }
     }
 
     /*
@@ -245,14 +272,48 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
             placeName = place.getString("name");
             placeID = place.getString("place_id");
             placeAddress = place.getString("vicinity");
+            JSONObject location = place.getJSONObject("geometry").getJSONObject("location");
             spinner.setVisibility(View.INVISIBLE);
 
+            lat = location.getDouble("lat");
+            lng = location.getDouble("lng");
+            setMap(new LatLng(lat, lng));
             resultAddressText.setText(placeAddress);
             resultText.setText(placeName);
+
             searched = true;
 
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    /*
+     * Customizes the map
+     */
+    private void setMap(final LatLng result) {
+        marker = map.addMarker(new MarkerOptions().position(result)
+                .title(placeName));
+        map.getUiSettings().setMapToolbarEnabled(false);
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(result, 15));
+
+    }
+
+    /*
+     * Helper method for returning the correct array of types
+     */
+    private LinkedList<String> chooseTypeArray(int choice) {
+        switch (choice) {
+            case MainActivity.EAT:
+                return eatTypes;
+            case MainActivity.PLAY:
+                return playTypes;
+            case MainActivity.SHOP:
+                return shopTypes;
+            case MainActivity.RELAX:
+                return relaxTypes;
+            default:
+                return eatTypes;
         }
     }
 
@@ -304,6 +365,8 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
         initLists();
         searched = false;
         resultText.setText("");
+        resultAddressText.setText("");
+        marker.remove();
         spinner.setVisibility(View.VISIBLE);
         makeAPIRequest();
     }
@@ -326,6 +389,19 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
+    }
+
+    /*
+     * Saves necessary data for saving the state of the app
+     */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString("place", placeName);
+        outState.putString("address", placeAddress);
+        outState.putString("id", placeID);
+        outState.putDouble("markerLat", lat);
+        outState.putDouble("markerLng", lng);
+        super.onSaveInstanceState(outState);
     }
 
     /*
