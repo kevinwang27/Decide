@@ -6,14 +6,9 @@
     <string name="relax_buttonText">Relax</string>
     <string name="initPrompt">What do you want to do?</string>
     <string name="distance_option">How far are you willing to go?</string>
-    <string name="price_option">How much are you willing to pay?</string>
-    <string name="price_hint">20</string>
     <string name="distance_hint">5</string>
     <string name="distance_unit">mi</string>
-    <string name="price_unit">$</string>
     <string name="go">GO</string>
-    <string name="location_error">Unable to access your location.
-        Please make sure your location is on and you allow Decide access to it. </string>
     <string name="try_again">Try Another</string>
     <string name="view_in_maps">View in Maps</string>
 </resources>
