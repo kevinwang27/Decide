@@ -87,6 +87,7 @@
         android:onClick="go"
         android:text="@string/view_in_maps"
         android:textColor="@android:color/black"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/try_again"
         app:layout_constraintEnd_toStartOf="@+id/rightGuideline"
         app:layout_constraintStart_toStartOf="@+id/leftGuideline" />
@@ -100,6 +101,7 @@
         android:onClick="tryAgain"
         android:text="@string/try_again"
         android:textColor="@android:color/black"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/rightGuideline"
         app:layout_constraintStart_toStartOf="@+id/leftGuideline" />

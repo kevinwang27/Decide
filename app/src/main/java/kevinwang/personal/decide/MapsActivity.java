@@ -16,6 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -49,6 +50,8 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
     private TextView resultText;
     private TextView resultAddressText;
     private MapFragment mapFragment;
+    private Button viewButton;
+    private Button tryButton;
     private GoogleMap map;
     private Marker marker;
     private double lat, lng;
@@ -71,6 +74,8 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
         spinner = (ProgressBar) findViewById(R.id.progressBar);
         resultText = (TextView) findViewById(R.id.result);
         resultAddressText = (TextView) findViewById(R.id.result_address);
+        viewButton = (Button) findViewById(R.id.go);
+        tryButton = (Button) findViewById(R.id.try_again);
         mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
 
@@ -87,6 +92,8 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
                     resultText.setText(placeName);
                     resultAddressText.setText(placeAddress);
                     spinner.setVisibility(View.GONE);
+                    viewButton.setVisibility(View.VISIBLE);
+                    tryButton.setVisibility(View.VISIBLE);
                     LatLng point = new LatLng(lat, lng);
                     marker = map.addMarker(new MarkerOptions().position(point).title(savedInstanceState.getString("place")));
                 }
@@ -167,6 +174,7 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
             public void onClick(DialogInterface dialogInterface, int i) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(intent);
+                finish();
             }
         });
         builder.create().show();
@@ -277,7 +285,8 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
             setMap(new LatLng(lat, lng));
             resultAddressText.setText(placeAddress);
             resultText.setText(placeName);
-
+            viewButton.setVisibility(View.VISIBLE);
+            tryButton.setVisibility(View.VISIBLE);
             searched = true;
 
         } catch (JSONException e) {
@@ -343,8 +352,7 @@ public class MapsActivity extends AppCompatActivity implements LocationListener,
             case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
                 if (grantResults.length > 0) {
                     try {
-                        LocationServices.FusedLocationApi.requestLocationUpdates(
-                                gac, locationRequest, this);
+                        onConnected(new Bundle());
                     } catch (SecurityException e) {
                         e.printStackTrace();
                     }
